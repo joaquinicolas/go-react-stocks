@@ -1,0 +1,22 @@
+.filter-box {
+    border-radius: 30rem;
+    background: rgba(248, 248, 248, 0.75);
+    line-height: 21px;
+
+}
+
+.time-button {
+    border-width: 0px;
+    border-color: transparent;
+    outline: 0px;
+    color: rgb(34, 34, 34);
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.bg-none {
+    background: transparent;
+}
+
+.bold {
+    font-weight: 700;
+}
