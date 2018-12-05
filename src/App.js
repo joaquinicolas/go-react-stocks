@@ -29,23 +29,22 @@ class App extends Component {
       modal: !this.state.modal
     });
   }
-  handleSubmit(symbol1, symbol2, symbol3) {
+  handleSubmit(symbol1, symbol2, symbol3, range) {
     let promisesArray = [];
     let dataTableHeaders = ['x'];
     if (symbol1) {
       dataTableHeaders.push(symbol1);
-      promisesArray.push(
-        bySymbol(symbol1));
+      promisesArray.push(bySymbol(symbol1, range));
     }
 
     if (symbol2) {
       dataTableHeaders.push(symbol2);
-      promisesArray.push(bySymbol(symbol2));
+      promisesArray.push(bySymbol(symbol2, range));
     }
 
     if (symbol3) {
       dataTableHeaders.push(symbol3);
-      promisesArray.push(bySymbol(symbol3));
+      promisesArray.push(bySymbol(symbol3, range));
     }
 
     Promise.all(promisesArray)
@@ -58,6 +57,7 @@ class App extends Component {
       })
   }
 
+  
   parseData(dataTableHeaders, values) {
     let dataTable = [
       dataTableHeaders
@@ -92,7 +92,7 @@ class App extends Component {
           </Col>
         </Row>
         <Container fluid>
-          <Route path="/stocks" render={props => <Stock data={this.state.data} />} />
+          <Route path="/stocks" render={props => <Stock handleSubmit={this.handleSubmit} data={this.state.data} />} />
           <Route exact path="/" render={props => <SymbolForm handleSubmit={this.handleSubmit} />} />
         </Container>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>

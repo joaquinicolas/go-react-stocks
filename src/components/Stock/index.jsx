@@ -4,8 +4,6 @@ import { Container, Row, Col, Button, ButtonGroup } from "reactstrap";
 import "./stock.css";
 
 const Stock = props => {
-  console.log("ok");
-
   return (
     <Container>
       <Row>
@@ -28,8 +26,8 @@ const Stock = props => {
       <Row>
         <Col sm={{ offset: 2 }}>
           <ButtonGroup>
-            <Button>1M</Button>
-            <Button>1A</Button>
+            <Button onClick={() => props.handleSubmit(props.data[0][1], props.data[0][2], props.data[0][3], '1m')}>1M</Button>
+            <Button onClick={() => props.handleSubmit(props.data[0][1], props.data[0][2], props.data[0][3], '1y')}>1A</Button>
           </ButtonGroup>
         </Col>
       </Row>
