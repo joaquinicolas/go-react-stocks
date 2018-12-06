@@ -2,25 +2,25 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
 // Chart Represents chart's json response from iextrading
 type Chart struct {
-	Date             string
-	Open             float64
-	Close            float64
-	UnadjustedVolume int
-	Change           float64
-	ChangePercent    float64
-	VWAP             float64
-	High             float64
-	Low              float64
-	Volume           int
-	Label            string
-	ChangeOverTime   float64
+	Date             string  `json:"date"`
+	Open             float64 `json:"open"`
+	Close            float64 `json:"close"`
+	UnadjustedVolume int     `json:"unadjustedVolume"`
+	Change           float64 `json:"change"`
+	ChangePercent    float64 `json:"changePercent"`
+	VWAP             float64 `json:"vwap"`
+	High             float64 `json:"high"`
+	Low              float64 `json:"low"`
+	Volume           int     `json:"volume"`
+	Label            string  `json:"label"`
+	ChangeOverTime   float64 `json:"changeOverTime"`
 }
 
 // chart gives back chart data for a symbol in a range.
