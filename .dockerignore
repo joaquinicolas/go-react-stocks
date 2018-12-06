@@ -1,0 +1,11 @@
+# Ignore react source code
+./src
+./public
+*.env*
+*.json
+
+# Ignore node_modules
+./node_modules
+
+# Ignore README
+README*
