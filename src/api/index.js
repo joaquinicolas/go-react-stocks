@@ -2,10 +2,10 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-// Range could be either 1 year or 1 month
-export async function bySymbol(symbol, range = '1m') {
+// queryString contains symbols (splitted by comma) and range
+export async function requestChart(queryString) {
   try {
-    const resp = await axios.get(`${API}/${symbol}/chart/${range}`);
+    const resp = await axios.get(`${API}/stocks${queryString}`);
     return resp.data;
   } catch (err) {
     if (err.response) {

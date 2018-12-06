@@ -5,7 +5,7 @@ import { Stock } from "./components/Stock";
 import { SymbolForm } from "./components/Form";
 import { Appbar } from "./components/Navbar";
 import { Container, Row, Col, Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
-import { bySymbol } from "./api";
+import { requestChart } from "./api";
 
 class App extends Component {
   state = {
@@ -29,32 +29,49 @@ class App extends Component {
       modal: !this.state.modal
     });
   }
-  handleSubmit(symbol1, symbol2, symbol3, range) {
-    let promisesArray = [];
+  handleSubmit(symbol1, symbol2, symbol3, range = '1m') {
+    let queryString = "?symbols=";
     let dataTableHeaders = ['x'];
-    if (symbol1) {
-      dataTableHeaders.push(symbol1);
-      promisesArray.push(bySymbol(symbol1, range));
+    const symbols = [symbol1, symbol2, symbol3];
+
+    
+    if (symbols.length === 0) {
+      return this.toggle({
+        title: "There is something wrong",
+        message: "At least a symbol is expected to be provided"
+      });
     }
 
-    if (symbol2) {
-      dataTableHeaders.push(symbol2);
-      promisesArray.push(bySymbol(symbol2, range));
+    for (let i = 0; i < 3; i++) {
+      if (symbols[i] && symbols[i].length > 1) {
+        if (symbols[i]) {
+          if (queryString.length > 9) {
+            queryString += `,${symbols[i]}`;
+          } else {
+            queryString += `${symbols[i]}`;
+          }
+        }
+        dataTableHeaders.push(symbols[i]);       
+      }
     }
-
-    if (symbol3) {
-      dataTableHeaders.push(symbol3);
-      promisesArray.push(bySymbol(symbol3, range));
-    }
-
-    Promise.all(promisesArray)
-      .then(values => this.parseData(dataTableHeaders, values))
-      .catch(err => {
-        this.toggle({
-          title: 'There is something wrong',
-          message: err,
+    queryString += `&range=${range}`;
+    let self = this;
+    requestChart(queryString)
+    .then(values => this.parseData(dataTableHeaders, values))
+    .catch(err =>  {
+      if (err && err.error) {
+        return self.toggle({
+          title: "There is something wrong",
+          message: err.error
         });
-      })
+      }
+
+      return self.toggle({
+        title: "There is something wrong",
+        message: 'Unexpected error'
+      });
+      
+    });
   }
 
   
