@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Chart from "react-google-charts";
 import { Container, Row, Col, Button, ButtonGroup } from "reactstrap";
 import "./stock.css";
