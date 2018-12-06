@@ -21,3 +21,5 @@ Or
 ```bash
     docker run -p 8080:8080 -d joaquinnicolas96/iextrading
 ```
+
+Now, Open your browser at http://localhost:8080/
