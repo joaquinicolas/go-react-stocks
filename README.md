@@ -23,3 +23,11 @@ Or
 ```
 
 Now, Open your browser at http://localhost:8080/
+
+## Running the app using just Go
+
+```bash
+    npm run build
+    go run main.go stock.go chart.go
+```
+
