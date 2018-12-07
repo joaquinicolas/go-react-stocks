@@ -1,19 +1,26 @@
 package main
 
 import (
-	"time"
-	"github.com/gin-gonic/gin"
+	"sync"
 	"net/http"
 	"strings"
+	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-func StockHandler(c *gin.Context)  {
+func StockHandler(c *gin.Context) {
+
+	var wg sync.WaitGroup
+	var mutex = &sync.Mutex{}
+	result := make([][]*Chart, 0)
+
 	c.Header("Content-Type", "application/json")
 	dataRange := c.DefaultQuery("range", "1m")
 	symbols := c.Query("symbols")
-	
+
 	if symbols == "" {
-		c.JSON(http.StatusBadRequest, gin.H {
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "symbols must be defined",
 		})
 		return
@@ -21,38 +28,31 @@ func StockHandler(c *gin.Context)  {
 
 	splittedSymbols := strings.Split(symbols, ",")
 
-	httpClient := http.Client {
+	httpClient := http.Client{
 		Timeout: 5 * time.Second,
 	}
-	data1, err := chart(&httpClient, splittedSymbols[0], dataRange)
-	var data2 []*Chart
-	var data3 []*Chart
 
-	if len(splittedSymbols) > 1{
-		data2, err = chart(&httpClient, splittedSymbols[1], dataRange)
-	}
-	if len(splittedSymbols) > 2 {
-		data3, err = chart(&httpClient, splittedSymbols[2], dataRange)
+	for _, symbol := range splittedSymbols {
+		if symbol != "" {
+			wg.Add(1)
+			go func(s string) {
+				defer wg.Done()
+				data, err := chart(&httpClient, s, dataRange)
+				if err != nil {
+					c.JSON(http.StatusForbidden, gin.H{
+						"error": err.Error(),
+					})
+					return
+				}
+
+				mutex.Lock()
+				result = append(result, data)
+				mutex.Unlock()
+			}(symbol)
+		}
 	}
 
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H {
-			"error": err.Error(),
-		})
-		return
-	}
-
-	result := make([][]*Chart, 1)
-	result[0] = data1
-
-	if len(data2) > 0 {
-		result = append(result, data2)
-	}
-	
-	if len(data3) > 0 {
-		result = append(result, data3)
-	}
-	
-
+	wg.Wait()
 	c.JSON(http.StatusOK, result)
+	
 }
