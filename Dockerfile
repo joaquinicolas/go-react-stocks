@@ -18,14 +18,16 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app/iextrading
 FROM alpine:latest as certs
 RUN apk --update add ca-certificates
 
-FROM scratch
+FROM alpine
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 WORKDIR /app
 # Copy static exe
-COPY --from=builder /app/ ./
+COPY --from=builder /app .
 COPY build ./build
+RUN ls
 
-
+# Not support by Heroku
+# EXPOSE ${PORT}
 # Run the binary
-ENTRYPOINT [ "./iextrading" ]
+CMD [ "/app/iextrading" ]

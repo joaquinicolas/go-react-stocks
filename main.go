@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"flag"
+	"os"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -13,8 +13,7 @@ const api = "https://api.iextrading.com/1.0"
 
 func main() {
 
-	port := flag.String("port", "8080", "server port")
-	flag.Parse()
+	port := os.Getenv("PORT")
 	
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -26,6 +25,6 @@ func main() {
 	api.GET("/stocks", StockHandler)
 	
 	// start and run the server
-	router.Run(fmt.Sprintf(":%s", *port))
+	router.Run(fmt.Sprintf(":%s", port))
 
 }
